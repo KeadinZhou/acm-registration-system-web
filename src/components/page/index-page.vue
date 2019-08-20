@@ -49,7 +49,29 @@
 import store from '@/vuex/store.js'
 export default {
   name: 'index-page',
-  store
+  store,
+  data () {
+    return {
+    }
+  },
+  methods: {
+    permissionCheck () {
+      if (this.$store.state.userIsUpdated) {
+        if (this.$store.state.user.permission !== 0) {
+          this.$router.replace('/activate')
+        } else {
+          // this.getData()
+        }
+      } else {
+        setTimeout(() => {
+          this.permissionCheck()
+        }, 100)
+      }
+    }
+  },
+  created () {
+    this.permissionCheck()
+  }
 }
 </script>
 

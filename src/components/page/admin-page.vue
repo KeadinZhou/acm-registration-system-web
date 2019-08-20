@@ -1,7 +1,6 @@
 <template>
     <div>
-        <template v-if="!this.$store.state.user.isAdmin">
-            <error-page></error-page>
+        <template v-if="this.$store.state.user.permission !== -1">
         </template>
         <template v-else>
             <el-card class="box-card" shadow="hover">
@@ -31,7 +30,6 @@
 </template>
 
 <script>
-import ErrorPage from '@/components/notfound-page'
 export default {
   name: 'admin-page',
   data () {
@@ -40,12 +38,25 @@ export default {
     }
   },
   methods: {
+    permissionCheck () {
+      if (this.$store.state.userIsUpdated) {
+        if (this.$store.state.user.permission !== -1) {
+          this.$router.replace('/error401')
+        } else {
+          // this.getData()
+        }
+      } else {
+        setTimeout(() => {
+          this.permissionCheck()
+        }, 100)
+      }
+    },
     handleClick (tab, event) {
       this.$message(tab.label)
     }
   },
-  components: {
-    'error-page': ErrorPage
+  created () {
+    this.permissionCheck()
   }
 }
 </script>

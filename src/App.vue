@@ -1,34 +1,52 @@
 <template>
-  <div id="app">
-      <page-nav></page-nav>
-      <div class="page-main-box" ref="pageMainBox">
-          <router-view/>
-      </div>
-      <page-foot></page-foot>
-  </div>
+    <div id="app" ref="pageBox">
+        <el-scrollbar class="scrollbar">
+            <div id="appBox">
+                <page-nav></page-nav>
+                <div class="page-main-box" ref="pageMainBox">
+                    <router-view/>
+                </div>
+                <page-foot></page-foot>
+            </div>
+        </el-scrollbar>
+    </div>
 </template>
 
 <script>
-import Nav from '@/components/page-nav'
-import Foot from '@/components/page-foot'
+import PageNav from '@/components/pageitem/page-nav'
+import PageFoot from '@/components/pageitem/page-foot'
 export default {
   name: 'App',
   components: {
-    'page-nav': Nav,
-    'page-foot': Foot
+    'page-nav': PageNav,
+    'page-foot': PageFoot
   },
   data () {
     return {
-      clientHeight: ''
+      clientHeight: window.innerHeight,
+      clientWidth: window.innerWidth
+    }
+  },
+  methods: {
+    fixBox () {
+      this.clientHeight = window.innerHeight
+      this.clientWidth = window.innerWidth
+      this.$refs.pageMainBox.style.minHeight = this.clientHeight - 61 - 44 - 120 + 30 + 'px'
+      this.$refs.pageBox.style.height = this.clientHeight + 'px'
+      this.$refs.pageBox.style.widows = this.clientWidth + 'px'
     }
   },
   mounted () {
-    this.clientHeight = document.documentElement.clientHeight - 60 - 40 - 100 + 'px'
-    this.$refs.pageMainBox.style.minHeight = this.clientHeight
+    this.fixBox()
+    const that = this
+    window.onresize = () => {
+      return (() => {
+        that.fixBox()
+      })()
+    }
   }
 }
 </script>
-
 <style>
     *{
         padding: 0;
@@ -39,7 +57,14 @@ export default {
     }
     #app{
         font-family: "Helvetica Neue",Helvetica,"Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-        min-width: 1200px;
+        overflow: hidden;
+        width: 100%;
+        min-width: 1100px;
+    }
+    #appBox{
+        position: relative;
+        left: 50%;
+        transform: translate(-50%,0);
     }
     .page-main-box{
         margin-top: 20px;
@@ -49,5 +74,11 @@ export default {
         min-height: 1000px;
         left: 50%;
         transform: translate(-50%,0);
+    }
+    .scrollbar{
+        height: 100%;
+    }
+    .el-scrollbar__wrap {
+        overflow: auto;
     }
 </style>
