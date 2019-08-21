@@ -9,7 +9,7 @@
                 <p style="color: #222222;font-size: 20px;line-height: 24px;margin-bottom: 10px"><b>You are not allowed to access this page...</b></p>
                 <p style="color: #808080;font-size: 13px;line-height: 21px;margin-bottom: 30px">Please check that the URL you entered is correct, or click the button below to return to the homepage.</p>
                 <el-button type="primary" size="medium" round @click="$router.push('/')" style="background: #1482f0;border-color:#1482f0">Back to home</el-button>
-                <template v-if="!$store.state.user.username">
+                <template v-if="$store.state.user.permission === -9">
                     <el-button type="primary" size="medium" round @click="$router.push('/login')" style="background: #1482f0;border-color:#1482f0">Login first</el-button>
                 </template>
             </div>

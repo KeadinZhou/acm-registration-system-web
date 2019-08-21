@@ -18,7 +18,7 @@
                                 prefix-icon="el-icon-message"
                                 style="width: 208px;font-size: 13px">
                         </el-input>
-                        <el-button style="float: right" @click="sendEmail">发送</el-button>
+                        <el-button style="float: right;width: 70px" @click="sendEmail" :disabled="this.countDown !== 0">{{ this.countDown===0?'发送':this.countDown }}</el-button>
                     </el-form-item>
                     <el-form-item prop="code">
                         <el-input type="code"
@@ -31,7 +31,7 @@
                     <el-form-item>
                         <div class="submitBox">
                             <el-button class="submitButton" type="primary" @click="submitForm('FormData')">激活账号</el-button>
-                            <el-link type="info" :underline="false" style="width: 100%; text-align: center; font-size: 10px" @click="forgetPwd">&nbsp;不知道学生邮箱密码?</el-link>
+                            <el-link type="info" :underline="false" style="width: 100%; text-align: center; font-size: 10px" @click="hasNotMail">&nbsp;不知道学生邮箱密码?</el-link>
                         </div>
                     </el-form-item>
                 </el-form>
@@ -46,6 +46,7 @@ export default {
   data () {
     return {
       uuid: '',
+      countDown: 0,
       FormData: {
         email: '',
         code: ''
@@ -59,9 +60,10 @@ export default {
   methods: {
     permissionCheck () {
       if (this.$store.state.userIsUpdated) {
-        if (this.$store.state.user.permission !== 0) { // temp
+        if (this.$store.state.user.permission !== 0) {
           this.$router.replace('/index')
         } else {
+          this.$message.warning('要使用系统必须先激活账号')
           this.FormData.email = this.$store.state.user.username + '@stu.zucc.edu.cn'
         }
       } else {
@@ -70,13 +72,46 @@ export default {
         }, 100)
       }
     },
+    buttonCountDown () {
+      if (this.countDown === 0) return
+      this.countDown -= 1
+      setTimeout(() => {
+        this.buttonCountDown()
+      }, 1000)
+    },
     sendEmail () {
       const that = this
       var auth = that.$store.state.auth()
 
       that.$http.get(that.$store.state.api + '/v1/captcha/mail?mail=' + this.FormData.email, auth)
         .then(data => {
-          console.log(data.data)
+          that.uuid = data.data.data.uuid
+          that.countDown = 60
+          that.$message.success('发送成功!')
+          that.buttonCountDown()
+        })
+        .catch(function (error) {
+          if (error.response) {
+            that.$message.error(error.response.data.msg)
+          }
+        })
+    },
+    emailSure () {
+      const that = this
+      var auth = that.$store.state.auth()
+
+      that.$http.post(that.$store.state.api + '/v1/captcha/mail/' + this.uuid, {code: that.FormData.code}, auth)
+        .then(data => {
+          that.$http.post(that.$store.state.api + '/v1/user/activation', {uuid: that.uuid}, auth)
+            .then(data => {
+              that.$message.success('激活成功')
+              that.$store.commit('updateUser', true)
+            })
+            .catch(function (error) {
+              if (error.response) {
+                that.$message.error(error.response.data.msg)
+              }
+            })
         })
         .catch(function (error) {
           if (error.response) {
@@ -87,14 +122,14 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.login(this.FormData.username, this.FormData.password)
+          this.emailSure()
         } else {
           return false
         }
       })
     },
-    forgetPwd () {
-      this.$alert('请使用本人的学生邮箱向管理员发送邮件以找回密码 <br/> 管理员邮箱: <b>31701030@stu.zucc.edu.cn<b/>', '找回密码', {
+    hasNotMail () {
+      this.$alert('需要验证学生邮箱以确认身份<br/>新生学生邮箱的密码请向班主任/学工办老师询问', '学生邮箱', {
         confirmButtonText: '确定',
         dangerouslyUseHTMLString: true
       })

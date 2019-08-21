@@ -6,17 +6,7 @@
                     <i class="el-icon-user-solid"></i><b>个人信息</b>
                 </div>
                 <el-divider><i class="el-icon-postcard"></i></el-divider>
-                <template v-if="!this.$store.state.user.isLogin">
-                    <el-alert
-                            title="没有权限"
-                            type="error"
-                            description="想要访问该页面请先登录"
-                            show-icon
-                            :closable="false"
-                            effect="dark">
-                    </el-alert>
-                </template>
-                <template v-else>
+                <template>
                     <div class="form-box">
                         <el-form :model="FormDate" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" label-position="top">
                             <el-form-item label="学号" prop="sid">
@@ -141,6 +131,22 @@ export default {
     }
   },
   methods: {
+    permissionCheck () {
+      if (this.$store.state.userIsUpdated) {
+        if (this.$store.state.user.permission === -9) {
+          this.$router.replace('/error401')
+        } else
+        if (this.$store.state.user.permission === 0) {
+          this.$router.replace('/activate')
+        } else {
+          // this.getData()
+        }
+      } else {
+        setTimeout(() => {
+          this.permissionCheck()
+        }, 100)
+      }
+    },
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -158,6 +164,9 @@ export default {
     imgUrl: function () {
       return this.FormDate.idcard ? '' + this.FormDate.idcard : '/assets/acm-man-cut.png'
     }
+  },
+  created () {
+    this.permissionCheck()
   }
 }
 </script>

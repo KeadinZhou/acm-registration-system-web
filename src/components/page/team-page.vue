@@ -6,17 +6,7 @@
                     <i class="el-icon-share"></i><b>队伍管理</b>
                 </div>
                 <el-divider><i class="el-icon-postcard"></i></el-divider>
-                <template v-if="!this.$store.state.user.isLogin">
-                    <el-alert
-                            title="没有权限"
-                            type="error"
-                            description="想要访问该页面请先登录"
-                            show-icon
-                            :closable="false"
-                            effect="dark">
-                    </el-alert>
-                </template>
-                <template v-else>
+                <template>
                     <div class="form-box">
                         login yet
                     </div>
@@ -30,7 +20,28 @@
 import store from '@/vuex/store.js'
 export default {
   name: 'team-page',
-  store
+  store,
+  methods: {
+    permissionCheck () {
+      if (this.$store.state.userIsUpdated) {
+        if (this.$store.state.user.permission === -9) {
+          this.$router.replace('/error401')
+        } else
+        if (this.$store.state.user.permission === 0) {
+          this.$router.replace('/activate')
+        } else {
+          // this.getData()
+        }
+      } else {
+        setTimeout(() => {
+          this.permissionCheck()
+        }, 100)
+      }
+    }
+  },
+  created () {
+    this.permissionCheck()
+  }
 }
 </script>
 
