@@ -64,9 +64,8 @@ export default {
       })
         .then(data => {
           that.$store.commit('updateToken', data.data.data.token)
-          that.$store.commit('updateUser')
+          that.$store.commit('updateUser', true)
           that.$message.success('登录成功')
-          that.$router.push('/index')
         })
         .catch(function (error) {
           if (error.response) {

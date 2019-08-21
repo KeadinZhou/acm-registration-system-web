@@ -46,7 +46,7 @@ var mutations = {
   savePage (state, page) {
     state.page = page
   },
-  updateUser (state) {
+  updateUser (state, isLogin) {
     if (!localStorage.getItem('acmToken')) {
       state.userIsUpdated = true
       return
@@ -64,6 +64,9 @@ var mutations = {
             console.log(data.data.data.user)
             state.user = data.data.data.user
             state.userIsUpdated = true
+            if (isLogin) {
+              that.$router.push('/index')
+            }
           })
           .catch(function (error) {
             if (error.response) {

@@ -57,7 +57,7 @@ export default {
   methods: {
     permissionCheck () {
       if (this.$store.state.userIsUpdated) {
-        if (this.$store.state.user.permission !== 0) {
+        if (this.$store.state.user.permission === 0) {
           this.$router.replace('/activate')
         } else {
           // this.getData()

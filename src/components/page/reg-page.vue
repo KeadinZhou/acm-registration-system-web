@@ -37,7 +37,7 @@
                                 placeholder="验证码"
                                 prefix-icon="el-icon-mouse"
                                 @keyup.enter.native="submitForm('FormData')">
-                            <img slot="suffix" :src="'data:image/jpg;base64,'+ this.captchaImg" alt="点击刷新验证码" title="点击刷新验证码" height="39px" style="display: block" @click="getCaptcha">
+                            <img slot="suffix" :src="'data:image/jpg;base64,'+ this.captchaImg" alt="点击刷新验证码" title="点击刷新验证码" height="40px" @click="getCaptcha">
                         </el-input>
                     </el-form-item>
                     <el-form-item>
@@ -74,6 +74,22 @@ export default {
         callback()
       }
     }
+    var validateCaptcha = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入验证码!'))
+      }
+      const that = this
+      that.$http.post(that.$store.state.api + '/v1/captcha/image/' + this.captchaUuid, {code: value})
+        .then(data => {
+          console.log(data.data)
+          callback()
+        })
+        .catch(function (error) {
+          if (error.response) {
+            callback(new Error('验证码错误!'))
+          }
+        })
+    }
     return {
       captchaImg: '',
       captchaUuid: '',
@@ -87,22 +103,22 @@ export default {
         username: [{ validator: validateUsername, trigger: 'blur' }],
         password: [{ required: true, message: '请输入你的密码!', trigger: 'blur' }],
         password2: [{ validator: validatePass, trigger: 'blur' }],
-        captcha: [{ required: true, message: '请输入验证码!', trigger: 'blur' }]
+        captcha: [{ validator: validateCaptcha, trigger: 'blur' }]
       }
     }
   },
   methods: {
-    login (username, password) {
+    regSure (data) {
       const that = this
-      that.$http.post(that.$store.state.api + '/v1/token', {
-        username: username,
-        password: password
+      that.$http.post(that.$store.state.api + '/v1/user/', {
+        username: data.username,
+        password: data.password,
+        nickname: data.username,
+        uuid: this.captchaUuid
       })
         .then(data => {
-          that.$store.commit('updateToken', data.data.data.token)
-          that.$store.commit('updateUser')
-          that.$message.success('登录成功')
-          that.$router.push('/index')
+          that.$message.success('注册成功!')
+          that.$router.push('/login')
         })
         .catch(function (error) {
           if (error.response) {
@@ -113,7 +129,7 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.login(this.FormData.username, this.FormData.password)
+          this.regSure(this.FormData)
         } else {
           return false
         }

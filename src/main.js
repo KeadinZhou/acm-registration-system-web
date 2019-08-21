@@ -24,7 +24,7 @@ new Vue({
   template: '<App/>',
   created () {
     store.commit('savePage', this)
-    store.commit('updateUser')
+    store.commit('updateUser', false)
     document.title = this.$route.meta.title + ' - ' + store.state.contest.title
   }
 })

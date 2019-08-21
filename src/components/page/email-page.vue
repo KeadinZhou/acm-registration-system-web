@@ -59,7 +59,7 @@ export default {
   methods: {
     permissionCheck () {
       if (this.$store.state.userIsUpdated) {
-        if (this.$store.state.user.permission === 0) { // temp
+        if (this.$store.state.user.permission !== 0) { // temp
           this.$router.replace('/index')
         } else {
           this.FormData.email = this.$store.state.user.username + '@stu.zucc.edu.cn'
@@ -74,7 +74,7 @@ export default {
       const that = this
       var auth = that.$store.state.auth()
 
-      that.$http.get(that.$store.state.api + '/v1/captcha/mail/', {mail: this.FormData.email}, auth)
+      that.$http.get(that.$store.state.api + '/v1/captcha/mail?mail=' + this.FormData.email, auth)
         .then(data => {
           console.log(data.data)
         })
