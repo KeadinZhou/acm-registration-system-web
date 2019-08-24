@@ -17,7 +17,7 @@
             <el-dropdown @command="handleCommand" class="page-nav-right-menu">
                 <span class="el-dropdown-link">
                     <i class="el-icon-user el-icon--right"></i>
-                    {{ this.$store.state.user.nickname }}
+                    {{ this.$store.state.user.username }}
                     <i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
