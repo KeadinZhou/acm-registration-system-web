@@ -12,6 +12,13 @@ const USER_NULL = {
   permission: -9
 }
 
+const CONTEST_NULL = {
+  id: -9,
+  limit: 0,
+  name: '暂无活动的报名',
+  status: 0
+}
+
 var state = {
   page: null,
   api: api,
@@ -20,6 +27,7 @@ var state = {
     return Math.round(new Date().getTime() / 1000)
   },
   auth: function () {
+    if (!localStorage.getItem('acmToken')) return null
     var time = this.nowTime()
     return {
       headers: {
@@ -33,13 +41,7 @@ var state = {
   },
   user: USER_NULL,
   userIsUpdated: false,
-  contest: {
-    id: 1000,
-    title: '浙江大学城市学院2019新生选拔赛',
-    regBeginTime: '2019-07-10 12:00',
-    regEndTime: '2019-07-30 12:00',
-    teamMode: false
-  }
+  contest: CONTEST_NULL
 }
 
 var mutations = {
@@ -96,6 +98,25 @@ var mutations = {
         that.$message.success('登出成功')
         that.$router.push('/index')
         that.$store.commit('updateUser')
+      })
+      .catch(function (error) {
+        if (error.response) {
+          that.$message.error(error.response.data.msg)
+        }
+      })
+  },
+  updateContest (state) {
+    const that = state.page
+    const auth = state.auth()
+
+    that.$http.get(that.$store.state.api + '/v1/contest/?page=1&status=1', auth)
+      .then(data => {
+        if (data.data.data.res.count === 0) {
+          state.contest = CONTEST_NULL
+        } else {
+          state.contest = data.data.data.res.data[0]
+          console.log(state.contest)
+        }
       })
       .catch(function (error) {
         if (error.response) {

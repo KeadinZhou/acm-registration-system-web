@@ -135,9 +135,9 @@ export default {
           that.FormData.sex = user.gender ? (user.gender === 1 ? '男' : '女') : ''
           that.FormData.college = user.college ? user.college : ''
           that.FormData.major = user.profession ? user.profession : ''
-          that.FormData.class = user.class_ ? user.class_ : ''
-          that.FormData.phone = user.phone ? user.phone : ''
-          that.FormData.qq = user.qq ? user.qq : ''
+          that.FormData.class = user.class_ ? Number(user.class_) : ''
+          that.FormData.phone = user.phone ? Number(user.phone) : ''
+          that.FormData.qq = user.qq ? Number(user.qq) : ''
           that.FormData.remark = user.remark ? user.remark : ''
         })
         .catch(function (error) {
@@ -151,7 +151,6 @@ export default {
       var auth = that.$store.state.auth()
 
       that.$http.put(that.$store.state.api + '/v1/user/' + that.FormData.sid, {
-        password: 'Keadin',
         username: that.FormData.sid,
         nickname: that.FormData.name,
         gender: that.FormData.sex === '男' ? 1 : 2,
@@ -164,6 +163,7 @@ export default {
       }, auth)
         .then(data => {
           that.$message.success('保存成功！')
+          that.$router.push('/team')
         })
         .catch(function (error) {
           if (error.response) {

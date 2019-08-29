@@ -7,11 +7,14 @@ import 'element-ui/lib/theme-chalk/index.css'
 import VueRouter from 'vue-router'
 import store from './vuex/store.js'
 import axios from 'axios'
+import MarkdownItVue from 'markdown-it-vue'
+import 'markdown-it-vue/dist/markdown-it-vue.css'
 import App from './App'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(VueRouter)
+Vue.use(MarkdownItVue)
 axios.defaults.withCredentials = true
 Vue.prototype.$http = axios
 
@@ -25,13 +28,14 @@ new Vue({
   created () {
     store.commit('savePage', this)
     store.commit('updateUser', false)
-    document.title = this.$route.meta.title + ' - ' + store.state.contest.title
+    store.commit('updateContest')
+    document.title = this.$route.meta.title
   }
 })
 
 router.beforeEach((to, from, next) => {
   if (to.meta.title) {
-    document.title = to.meta.title + ' - ' + store.state.contest.title
+    document.title = to.meta.title + ' - ' + store.state.contest.name
   }
   next()
 })

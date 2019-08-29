@@ -7,20 +7,17 @@
                 <div class="page-title">
                     <i class="el-icon-edit"></i><b>管理后台</b>
                 </div>
-                <el-tabs v-model="activeName" @tab-click="handleClick">
+                <el-tabs v-model="activeName" @tab-click="handleClick" type="card">
                     <el-tab-pane label="竞赛配置" name="1">
-                        竞赛配置
+                        <admin-contest></admin-contest>
                     </el-tab-pane>
                     <el-tab-pane label="首页管理" name="2">
-                        首页管理
+                        <admin-index></admin-index>
                     </el-tab-pane>
-                    <el-tab-pane label="个人管理" name="3">
-                        个人管理
+                    <el-tab-pane label="队伍管理" name="3">
+                        <admin-team></admin-team>
                     </el-tab-pane>
-                    <el-tab-pane label="队伍管理" name="4">
-                        队伍管理
-                    </el-tab-pane>
-                    <el-tab-pane label="结果导出" name="5">
+                    <el-tab-pane label="结果导出" name="4">
                         结果导出
                     </el-tab-pane>
                 </el-tabs>
@@ -30,8 +27,16 @@
 </template>
 
 <script>
+import AdminContest from '@/components/admin/admin-contest'
+import AdminIndex from '@/components/admin/admin-index'
+import AdminTeam from '@/components/admin/admin-team'
 export default {
   name: 'admin-page',
+  components: {
+    'admin-contest': AdminContest,
+    'admin-index': AdminIndex,
+    'admin-team': AdminTeam
+  },
   data () {
     return {
       activeName: '1'
@@ -52,7 +57,7 @@ export default {
       }
     },
     handleClick (tab, event) {
-      this.$message(tab.label)
+      // this.$message(tab.label)
     }
   },
   created () {

@@ -5,132 +5,65 @@
                 <i class="el-icon-s-order"></i><b>报名列表</b>
             </div>
             <el-collapse accordion>
-                <el-collapse-item class="collapse-item">
-                    <template slot="title">
-                        <b>001</b>
-                        <el-divider direction="vertical"></el-divider>
-                        三个臭皮匠
-                        <el-divider direction="vertical"></el-divider>
-                        <template>
-                            <div class="state-success">
-                                <i class="el-icon-success"></i>
-                                审核通过
-                            </div>
-                        </template>
-                    </template>
-                    <template>
-                        <div>队伍编号：001</div>
-                        <div>队伍名称：三个臭皮匠</div>
-                        <div>队伍成员：罗贤哲、罗贤哲、罗贤哲</div>
-                        <div>
-                            队伍状态：
-                            <template>
-                                <div class="state-success">
-                                    <i class="el-icon-success"></i>
-                                    审核通过
-                                </div>
-                            </template>
-                        </div>
-                    </template>
-                </el-collapse-item>
 
-                <el-collapse-item class="collapse-item">
+                <el-collapse-item v-for="(team,index) in listData" :key="index"  class="collapse-item">
                     <template slot="title">
-                        <b>002</b>
+                        <team-status :status="team.status"></team-status>
                         <el-divider direction="vertical"></el-divider>
-                        三个臭臭臭皮匠
-                        <el-divider direction="vertical"></el-divider>
-                        <template>
-                            <div class="state-reject">
-                                <i class="el-icon-error"></i>
-                                审核驳回
-                            </div>
-                        </template>
+                        <b>{{team.name}}</b>
                     </template>
-                    <template>
-                        <div>队伍编号：002</div>
-                        <div>队伍名称：三个臭臭臭皮匠</div>
-                        <div>队伍成员：罗贤哲、罗贤哲、罗贤哲</div>
-                        <div>
-                            队伍状态：
-                            <template>
-                                <div class="state-reject">
-                                    <i class="el-icon-error"></i>
-                                    审核驳回
-                                </div>
+                    <el-table :data="listTableData" style="width: 100%" :show-header="false">
+                        <el-table-column label="Item" align="center" width="200">
+                            <template slot-scope="scope">
+                                {{ scope.row }}
                             </template>
-                        </div>
-                    </template>
-                </el-collapse-item>
-
-                <el-collapse-item class="collapse-item">
-                    <template slot="title">
-                        <b>003</b>
-                        <el-divider direction="vertical"></el-divider>
-                        三个臭臭
-                        <el-divider direction="vertical"></el-divider>
-                        <template>
-                            <div class="state-wait">
-                                <i class="el-icon-question"></i>
-                                等待审核
-                            </div>
-                        </template>
-                    </template>
-                    <template>
-                        <div>队伍编号：003</div>
-                        <div>队伍名称：三个臭臭</div>
-                        <div>队伍成员：罗贤哲、罗贤哲、罗贤哲</div>
-                        <div>
-                            队伍状态：
-                            <template>
-                                <div class="state-wait">
-                                    <i class="el-icon-question"></i>
-                                    等待审核
-                                </div>
+                        </el-table-column>
+                        <el-table-column label="Value" align="center">
+                            <template slot-scope="scope">
+                                <template v-if="scope.row==='比赛名称'">{{$store.state.contest.name}}</template>
+                                <template v-else-if="scope.row==='队伍ID'">{{team.id}}</template>
+                                <template v-else-if="scope.row==='队伍名称'">{{team.name}}</template>
+                                <template v-else-if="scope.row==='队伍状态'"><team-status :status="team.status" :info="true"></team-status></template>
+                                <template v-else-if="scope.row==='队伍成员'">
+                                    <template v-for="(mem,memIndex) in memberData.get(team.id)">
+                                        <template v-if="memIndex!==0">、</template>
+                                        {{mem.nickname}}({{mem.username}})
+                                    </template>
+                                </template>
+                                <template v-else>{{'!error'}}</template>
                             </template>
-                        </div>
-                    </template>
-                </el-collapse-item>
-
-                <el-collapse-item class="collapse-item">
-                    <template slot="title">
-                        <b>004</b>
-                        <el-divider direction="vertical"></el-divider>
-                        两个臭臭臭臭didi
-                        <el-divider direction="vertical"></el-divider>
-                        <template>
-                            <div class="state-unknown">
-                                <i class="el-icon-warning"></i>
-                                暂未提交
-                            </div>
-                        </template>
-                    </template>
-                    <template>
-                        <div>队伍编号：004</div>
-                        <div>队伍名称：两个臭臭臭臭didi</div>
-                        <div>队伍成员：罗贤哲、罗贤哲</div>
-                        <div>
-                            队伍状态：
-                            <template>
-                                <div class="state-unknown">
-                                    <i class="el-icon-warning"></i>
-                                    暂未提交
-                                </div>
-                            </template>
-                        </div>
-                    </template>
+                        </el-table-column>
+                    </el-table>
                 </el-collapse-item>
             </el-collapse>
+            <el-pagination
+                    :page-size="100"
+                    layout="prev,pager,next"
+                    :total="this.dataCount"
+                    :current-page="this.currentPage"
+                    align="center"
+                    style="margin-top: 20px"
+                    @current-change="current_change">
+            </el-pagination>
         </el-card>
     </div>
 </template>
 
 <script>
+import TeamStatus from '@/components/pageitem/team-status'
 export default {
   name: 'list-page',
+  components: {
+    'team-status': TeamStatus
+  },
   data () {
     return {
-      loading: false
+      loading: false,
+      dataCount: 0,
+      currentPage: 1,
+      listData: [],
+      memberData: [], // map
+      listTableData: ['队伍ID', '队伍名称', '队伍成员', '队伍状态']
     }
   },
   methods: {
@@ -139,13 +72,71 @@ export default {
         if (this.$store.state.user.permission === 0) {
           this.$router.replace('/activate')
         } else {
-          // this.getData()
+          this.getData(1)
         }
       } else {
         setTimeout(() => {
           this.permissionCheck()
         }, 100)
       }
+    },
+    current_change (currentPage) {
+      this.getData(currentPage)
+    },
+    getMemberOfTeam (id) {
+      const that = this
+      const auth = that.$store.state.auth()
+      that.$http.get(that.$store.state.api + '/v1/team_relationship/?team_id=' + id, auth)
+        .then(data => {
+          const memList = data.data.data.res.data
+          var memTmp = []
+          for (var tmp of memList) {
+            memTmp.push({
+              username: tmp.user.username,
+              nickname: tmp.user.nickname
+            })
+          }
+          that.memberData.set(id, memTmp)
+        })
+        .catch(function (error) {
+          if (error.response) {
+            that.$message.error(error.response.data.msg)
+          }
+        })
+    },
+    getMember () {
+      const that = this
+      that.memberData = new Map()
+      for (var team of that.listData) {
+        that.getMemberOfTeam(team.id)
+      }
+    },
+    getData (page) {
+      const that = this
+      const auth = that.$store.state.auth()
+      const contest = that.$store.state.contest
+      that.$http.get(that.$store.state.api + '/v1/team/?page_size=100&contest_id=' + contest.id + '&page=' + page, auth)
+        .then(data => {
+          const tmp = data.data.data.res.data
+          that.listData = []
+          for (var item of tmp) {
+            that.listData.push({
+              id: item.id,
+              name: item.name,
+              status: item.status
+            })
+          }
+          that.listData.sort(function (x, y) {
+            return x.id - y.id
+          })
+          that.getMember()
+          console.log(that.listData)
+        })
+        .catch(function (error) {
+          if (error.response) {
+            that.$message.error(error.response.data.msg)
+          }
+        })
     }
   },
   created () {
@@ -161,21 +152,5 @@ export default {
         margin-bottom: 50px;
         text-align: center;
         font-size: 30px;
-    }
-    .state-success{
-        display: inline;
-        color: #67C23A;
-    }
-    .state-reject{
-        display: inline;
-        color: #F56C6C;
-    }
-    .state-wait{
-        display: inline;
-        color: #E6A23C;
-    }
-    .state-unknown{
-        display: inline;
-        color: #909399;
     }
 </style>
