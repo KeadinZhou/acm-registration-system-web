@@ -37,5 +37,8 @@ router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title + ' - ' + store.state.contest.name
   }
+  if (to.meta.title === '队伍管理' && store.state.contest.limit === 1) {
+    document.title = '报名管理' + ' - ' + store.state.contest.name
+  }
   next()
 })

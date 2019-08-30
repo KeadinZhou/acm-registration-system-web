@@ -8,18 +8,18 @@
                     <i class="el-icon-edit"></i><b>管理后台</b>
                 </div>
                 <el-tabs v-model="activeName" @tab-click="handleClick" type="card">
-                    <el-tab-pane label="竞赛配置" name="1">
-                        <admin-contest></admin-contest>
-                    </el-tab-pane>
-                    <el-tab-pane label="首页管理" name="2">
-                        <admin-index></admin-index>
-                    </el-tab-pane>
-                    <el-tab-pane label="队伍管理" name="3">
-                        <admin-team></admin-team>
-                    </el-tab-pane>
-                    <el-tab-pane label="结果导出" name="4">
-                        结果导出
-                    </el-tab-pane>
+                        <el-tab-pane label="竞赛配置" name="1" v-loading="loading" v-if="isRefresh">
+                            <admin-contest></admin-contest>
+                        </el-tab-pane>
+                        <el-tab-pane label="首页管理" name="2" v-loading="loading" v-if="isRefresh">
+                            <admin-index></admin-index>
+                        </el-tab-pane>
+                        <el-tab-pane label="队伍管理" name="3" v-loading="loading" v-if="isRefresh">
+                            <admin-team></admin-team>
+                        </el-tab-pane>
+                        <el-tab-pane label="结果导出" name="4" v-loading="loading" v-if="isRefresh">
+                            结果导出
+                        </el-tab-pane>
                 </el-tabs>
             </el-card>
         </template>
@@ -39,10 +39,19 @@ export default {
   },
   data () {
     return {
-      activeName: '1'
+      activeName: '1',
+      loading: false,
+      isRefresh: true
     }
   },
   methods: {
+    refreshAll () {
+      this.isRefresh = false
+      this.$nextTick(function () {
+        this.isRefresh = true
+        this.loading = false
+      })
+    },
     permissionCheck () {
       if (this.$store.state.userIsUpdated) {
         if (this.$store.state.user.permission !== -1) {
@@ -57,7 +66,8 @@ export default {
       }
     },
     handleClick (tab, event) {
-      // this.$message(tab.label)
+      this.loading = true
+      this.refreshAll()
     }
   },
   created () {

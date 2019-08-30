@@ -18,7 +18,7 @@
             <el-input placeholder="队伍密码" v-model="addData.password"></el-input>
             <div style="margin: 20px"></div>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="createBoxShow = false">取消</el-button>
+                <el-button @click="addBoxShow = false">取消</el-button>
                 <el-button type="primary" @click="addTeam">加入</el-button>
             </div>
         </el-dialog>
@@ -26,15 +26,23 @@
         <div>
             <el-card class="box-card" shadow="hover">
                 <div class="page-title">
-                    <i class="el-icon-share"></i><b>队伍管理</b>
+                    <i class="el-icon-share"></i><b>{{$store.state.contest.limit>1?'队伍管理':'报名管理'}}</b>
                 </div>
                 <el-divider><i class="el-icon-postcard"></i></el-divider>
                 <div class="form-box">
                     <div>
                         <template v-if="!haveTeam">
+                            <div style="width:100%;display:flex;align-items:center;justify-content:space-around;margin-bottom: 40px">
+                                <el-tag disable-transitions>{{$store.state.contest.name}}</el-tag>
+                            </div>
                             <div style="width:100%;display:flex;align-items:center;justify-content:space-around;">
-                                <el-button @click="createBoxShow = true">创建队伍</el-button>
-                                <el-button @click="addBoxShow = true">加入队伍</el-button>
+                                <template v-if="$store.state.contest.limit>1">
+                                    <el-button @click="createBoxShow = true">创建队伍</el-button>
+                                    <el-button @click="addBoxShow = true">加入队伍</el-button>
+                                </template>
+                                <template v-else>
+                                    <el-button @click="oneClick">一键报名</el-button>
+                                </template>
                             </div>
                         </template>
                         <template v-else>
@@ -50,7 +58,7 @@
                                     <template slot-scope="scope">
                                         <template v-if="scope.row==='比赛名称'">{{$store.state.contest.name}}</template>
                                         <template v-else-if="scope.row==='队伍ID'">{{team.id}}</template>
-                                        <template v-else-if="scope.row==='队伍名称'">{{team.name}} <span style="cursor: pointer" @click="editName(team)"><i class="el-icon-edit"></i></span></template>
+                                        <template v-else-if="scope.row==='队伍名称'">{{team.name}} <template v-if="!(team.status===3||$store.state.contest.limit===1)"><span style="cursor: pointer" @click="editName(team)"><i class="el-icon-edit"></i></span></template></template>
                                         <template v-else-if="scope.row==='队伍队长'">{{team.create_username}}</template>
                                         <template v-else-if="scope.row==='队伍状态'"><team-status :status="team.status" :info="true"></team-status></template>
                                         <template v-else>{{'!error'}}</template>
@@ -115,10 +123,10 @@ export default {
       isLeader: false,
       relationId: 0,
       team: {
-        contest_id: 2,
-        create_username: '31701030',
-        id: 3,
-        name: 'TESTTEAM',
+        contest_id: -9,
+        create_username: '',
+        id: -9,
+        name: '',
         status: 0
       },
       teamMember: [],
@@ -279,6 +287,22 @@ export default {
         team.name = value
         this.saveTeam({name: value})
       })
+    },
+    oneClick () {
+      if (!this.createData.password) {
+        this.createData = {
+          name: this.$store.state.user.username + ' - ' + this.$store.state.user.nickname,
+          password: 'zucc-acm-lab'
+        }
+        this.createTeam()
+      }
+      if (this.team.contest_id !== -9) {
+        this.saveTeam({status: 1})
+      } else {
+        setTimeout(() => {
+          this.oneClick()
+        }, 500)
+      }
     },
     getData () {
       const that = this

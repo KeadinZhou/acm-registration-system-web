@@ -26,7 +26,7 @@
                 </el-popover>
             </template>
             <template v-else-if="status===3">
-                <el-popover placement="top" trigger="hover" content="审核通过，报名成功">
+                <el-popover placement="top" trigger="hover" content="报名信息审核通过，报名成功">
                     <div class="state-success" slot="reference">
                         <i class="el-icon-success"></i>
                         审核通过

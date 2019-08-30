@@ -128,10 +128,10 @@ export default {
         registration_status: row.registration_status
       }, auth)
         .then(data => {
-          that.$store.commit('updateContest')
           if (row2) {
             that.saveChangeSure(row2)
           } else {
+            that.$store.commit('updateContest')
             that.getData(that.currentPage)
             that.$message.success('操作成功!')
           }

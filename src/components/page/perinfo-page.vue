@@ -37,7 +37,7 @@
                             <el-form-item label="QQ" prop="qq">
                                 <el-input v-model.number="FormData.qq" placeholder="请填写能联系上你的QQ号，例如：888888888" class="inputItem"></el-input>
                             </el-form-item>
-                            <el-form-item label="备注" prop="remark">
+                            <el-form-item :label="($store.state.contest.name.indexOf('招新')===-1?'备注':'高中竞赛的获奖经历')" prop="remark">
                                 <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 10}" v-model="FormData.remark">
                                 </el-input>
                             </el-form-item>
@@ -146,6 +146,15 @@ export default {
           }
         })
     },
+    gotoTeam () {
+      if (this.$store.state.user.nickname) {
+        this.$router.push('/team')
+      } else {
+        setTimeout(() => {
+          this.gotoTeam()
+        }, 100)
+      }
+    },
     putData () {
       const that = this
       var auth = that.$store.state.auth()
@@ -163,7 +172,8 @@ export default {
       }, auth)
         .then(data => {
           that.$message.success('保存成功！')
-          that.$router.push('/team')
+          store.commit('updateUser', false)
+          that.gotoTeam()
         })
         .catch(function (error) {
           if (error.response) {

@@ -8,7 +8,7 @@
             <el-menu-item index="/list" class="nav-item" route="/list">报名列表</el-menu-item>
             <template v-if="this.$store.state.user.permission !== -9">
                 <el-menu-item index="/perinfo" class="nav-item" route="/perinfo">个人信息</el-menu-item>
-                <el-menu-item index="/team" class="nav-item" route="/team">队伍管理</el-menu-item>
+                <el-menu-item index="/team" class="nav-item" route="/team">{{$store.state.contest.limit>1?'队伍管理':'报名管理'}}</el-menu-item>
             </template>
             <template v-if="this.$store.state.user.permission === -1">
                 <el-menu-item index="/admin" class="nav-item" route="/admin">管理后台</el-menu-item>
