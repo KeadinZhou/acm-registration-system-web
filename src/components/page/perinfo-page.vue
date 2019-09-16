@@ -37,8 +37,9 @@
                             <el-form-item label="QQ" prop="qq">
                                 <el-input v-model.number="FormData.qq" placeholder="请填写能联系上你的QQ号，例如：888888888" class="inputItem"></el-input>
                             </el-form-item>
-                            <el-form-item :label="($store.state.contest.name.indexOf('招新')===-1?'备注':'高中竞赛的获奖经历')" prop="remark">
-                                <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 10}" v-model="FormData.remark">
+                            <el-form-item label="备注" :prop="($store.state.contest.name.indexOf('招新')===-1?'remark2':'remark')">
+                                <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 10}" v-model="FormData.remark"
+                                          :placeholder="($store.state.contest.name.indexOf('招新')===-1?'':'请填写PTA账号并标注当前题集得分，以及高中竞赛的获奖经历')">
                                 </el-input>
                             </el-form-item>
                             <el-form-item>
@@ -101,6 +102,9 @@ export default {
         qq: [
           {required: true, message: '请填写能联系上你的QQ号', trigger: 'blur'},
           {type: 'number', message: 'QQ号必须为数字', trigger: 'change'}
+        ],
+        remark: [
+          {required: true, message: 'PTA账号信息为必填', trigger: 'change'}
         ]
       }
     }

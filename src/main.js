@@ -29,7 +29,7 @@ new Vue({
     store.commit('savePage', this)
     store.commit('updateUser', false)
     store.commit('updateContest')
-    document.title = this.$route.meta.title
+    document.title = '报名系统'
   }
 })
 

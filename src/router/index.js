@@ -1,15 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import IndexPage from '@/components/page/index-page'
-import ListPage from '@/components/page/list-page'
-import PerinfoPage from '@/components/page/perinfo-page'
-import TeamPage from '@/components/page/team-page'
-import AdminPage from '@/components/page/admin-page'
-import Error401Page from '@/components/page/error401-page'
-import Error404Page from '@/components/page/error404-page'
-import RegPage from '@/components/page/reg-page'
-import LoginPage from '@/components/page/login-page'
-import EmailPage from '@/components/page/email-page'
+const IndexPage = () => import('@/components/page/index-page')
+const ListPage = () => import('@/components/page/list-page')
+const PerinfoPage = () => import('@/components/page/perinfo-page')
+const TeamPage = () => import('@/components/page/team-page')
+const AdminPage = () => import('@/components/page/admin-page')
+const Error401Page = () => import('@/components/page/error401-page')
+const Error404Page = () => import('@/components/page/error404-page')
+const RegPage = () => import('@/components/page/reg-page')
+const LoginPage = () => import('@/components/page/login-page')
+const EmailPage = () => import('@/components/page/email-page')
 
 Vue.use(Router)
 

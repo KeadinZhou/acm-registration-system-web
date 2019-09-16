@@ -108,17 +108,29 @@ export default {
     }
   },
   methods: {
-    regSure (data) {
+    regSure (regData) {
       const that = this
       that.$http.post(that.$store.state.api + '/v1/user/', {
-        username: data.username,
-        password: data.password,
-        nickname: data.username,
+        username: regData.username,
+        password: regData.password,
+        nickname: regData.username,
         uuid: this.captchaUuid
       })
         .then(data => {
           that.$message.success('注册成功!')
-          that.$router.push('/login')
+          that.$http.post(that.$store.state.api + '/v1/token', {
+            username: regData.username,
+            password: regData.password
+          })
+            .then(data => {
+              that.$store.commit('updateToken', data.data.data.token)
+              that.$store.commit('updateUser', true)
+            })
+            .catch(function (error) {
+              if (error.response) {
+                that.$message.error(error.response.data.msg)
+              }
+            })
         })
         .catch(function (error) {
           if (error.response) {

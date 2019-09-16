@@ -37,7 +37,7 @@
                 </el-collapse-item>
             </el-collapse>
             <el-pagination
-                    :page-size="100"
+                    :page-size="20"
                     layout="prev,pager,next"
                     :total="this.dataCount"
                     :current-page="this.currentPage"
@@ -115,7 +115,7 @@ export default {
       const that = this
       const auth = that.$store.state.auth()
       const contest = that.$store.state.contest
-      that.$http.get(that.$store.state.api + '/v1/team/?page_size=100&contest_id=' + contest.id + '&page=' + page, auth)
+      that.$http.get(that.$store.state.api + '/v1/team/?page_size=20&contest_id=' + contest.id + '&page=' + page, auth)
         .then(data => {
           const tmp = data.data.data.res.data
           that.listData = []
