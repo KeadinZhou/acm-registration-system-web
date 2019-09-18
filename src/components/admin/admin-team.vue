@@ -18,7 +18,7 @@
                         <template v-else-if="scope.row==='班级'">{{userShowData.class_}}</template>
                         <template v-else-if="scope.row==='联系电话'">{{userShowData.phone}}</template>
                         <template v-else-if="scope.row==='QQ'">{{userShowData.qq}}</template>
-                        <template v-else-if="scope.row==='备注'"><markdown-it-vue :content="userShowData.remark"></markdown-it-vue></template>
+                        <template v-else-if="scope.row==='备注'"><markdown-it-vue :content="userShowData.remark?userShowData.remark:''"></markdown-it-vue></template>
                         <template v-else>{{'!error'}}</template>
                     </template>
                 </el-table-column>
@@ -89,7 +89,7 @@ export default {
       memberData: [], // map
       settingBox: false,
       showSetting: [false, true, false, false],
-      userShowData: null,
+      userShowData: {},
       userShow: false,
       userList: ['学号', '姓名', '性别', '分院', '专业', '班级', '联系电话', 'QQ', '备注']
     }

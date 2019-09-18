@@ -117,6 +117,7 @@ export default {
       const contest = that.$store.state.contest
       that.$http.get(that.$store.state.api + '/v1/team/?page_size=20&contest_id=' + contest.id + '&page=' + page, auth)
         .then(data => {
+          that.dataCount = data.data.data.res.count
           const tmp = data.data.data.res.data
           that.listData = []
           for (var item of tmp) {
