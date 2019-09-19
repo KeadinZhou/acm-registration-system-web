@@ -127,9 +127,9 @@ export default {
               status: item.status
             })
           }
-          that.listData.sort(function (x, y) {
-            return x.id - y.id
-          })
+          // that.listData.sort(function (x, y) {
+          //   return x.id - y.id
+          // })
           that.getMember()
           console.log(that.listData)
         })
