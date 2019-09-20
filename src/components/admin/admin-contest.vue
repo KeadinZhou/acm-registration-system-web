@@ -111,7 +111,15 @@ export default {
         })
         .catch(function (error) {
           if (error.response) {
-            that.$message.error(error.response.data.msg)
+            var tmp = error.response.data.msg
+            if ((typeof tmp) === 'string') {
+              that.$message.error(tmp)
+            } else {
+              for (const index in tmp) {
+                that.$message.error(tmp[index][0])
+                break
+              }
+            }
           }
         })
     },
@@ -138,7 +146,15 @@ export default {
         })
         .catch(function (error) {
           if (error.response) {
-            that.$message.error(error.response.data.msg)
+            var tmp = error.response.data.msg
+            if ((typeof tmp) === 'string') {
+              that.$message.error(tmp)
+            } else {
+              for (const index in tmp) {
+                that.$message.error(tmp[index][0])
+                break
+              }
+            }
           }
         })
     },
@@ -184,7 +200,15 @@ export default {
         })
         .catch(function (error) {
           if (error.response) {
-            that.$message.error(error.response.data.msg)
+            var tmp = error.response.data.msg
+            if ((typeof tmp) === 'string') {
+              that.$message.error(tmp)
+            } else {
+              for (const index in tmp) {
+                that.$message.error(tmp[index][0])
+                break
+              }
+            }
           }
         })
     }
