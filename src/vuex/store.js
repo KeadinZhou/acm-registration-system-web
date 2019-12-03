@@ -79,6 +79,11 @@ var mutations = {
       .catch(function (error) {
         if (error.response) {
           that.$message.error(error.response.data.msg)
+          state.user = USER_NULL
+          state.userIsUpdated = false
+          localStorage.removeItem('acmToken')
+          that.$router.push('/index')
+          that.$store.commit('updateUser')
         }
       })
   },

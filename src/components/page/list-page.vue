@@ -123,6 +123,13 @@ export default {
       const that = this
       const auth = that.$store.state.auth()
       const contest = that.$store.state.contest
+      if (contest.id === -9) {
+        setTimeout(() => {
+          that.$store.commit('updateContest')
+          this.getData(1)
+        }, 500)
+        return
+      }
       that.$http.get(that.$store.state.api + '/v1/team/?page_size=20&contest_id=' + contest.id + '&page=' + page, auth)
         .then(data => {
           that.dataCount = data.data.data.res.count
@@ -135,9 +142,6 @@ export default {
               status: item.status
             })
           }
-          // that.listData.sort(function (x, y) {
-          //   return x.id - y.id
-          // })
           that.getMember()
           console.log(that.listData)
         })
