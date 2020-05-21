@@ -10,6 +10,7 @@ const Error404Page = () => import('@/components/page/error404-page')
 const RegPage = () => import('@/components/page/reg-page')
 const LoginPage = () => import('@/components/page/login-page')
 const EmailPage = () => import('@/components/page/email-page')
+const AboutPage = () => import('@/components/page/about-page')
 
 Vue.use(Router)
 
@@ -81,6 +82,13 @@ export default new Router({
       component: Error401Page,
       meta: {
         title: '错误'
+      }
+    }, {
+      path: '/about',
+      name: 'about-page',
+      component: AboutPage,
+      meta: {
+        title: '关于'
       }
     }, {
       path: '*',
