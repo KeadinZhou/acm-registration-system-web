@@ -55,7 +55,7 @@
             </el-table-column>
         </el-table>
         <el-pagination
-                :page-size="100"
+                :page-size="pageSize"
                 layout="prev,pager,next"
                 :total="this.dataCount"
                 :current-page="this.currentPage"
@@ -74,6 +74,7 @@
 
 <script>
 import TeamStatus from '@/components/pageitem/team-status'
+const pageSize = 20
 export default {
   name: 'admin-team',
   components: {
@@ -217,9 +218,11 @@ export default {
       const that = this
       const auth = that.$store.state.auth()
       const contest = that.$store.state.contest
-      that.$http.get(that.$store.state.api + '/v1/team/?page_size=100&contest_id=' + contest.id + '&page=' + page, auth)
+      that.currentPage = page
+      that.$http.get(that.$store.state.api + '/v1/team/?page_size=' + pageSize + '&contest_id=' + contest.id + '&page=' + page, auth)
         .then(data => {
           const tmp = data.data.data.res.data
+          that.dataCount = data.data.data.res.count
           that.listData = []
           for (var item of tmp) {
             if (!that.showSetting[item.status]) continue
